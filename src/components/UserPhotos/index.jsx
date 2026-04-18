@@ -3,7 +3,7 @@ import { Typography, Card, CardMedia, CardContent, List, ListItem, ListItemText,
 
 import "./styles.css";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import models from "../../modelData/models";
+// import models from "../../modelData/models";
 import fetchModel from "../../lib/fetchModelData";
 import { AdvancedFeaturesContext } from "../../App";
 
@@ -20,7 +20,7 @@ function UserPhotos () {
     useEffect(() => {
         const loadPhotos = async () => {
             try {
-                const response = await fetchModel(`/photosOfUser/${user.userId}`);
+                const response = await fetchModel(`photo/photosOfUser/${user.userId}`);
                 
                 setPhotos(response.data);
             } catch (error) {
@@ -55,7 +55,7 @@ function UserPhotos () {
         <Card key={photo._id} sx={{ mb: isStepper ? 2 : 4 }}>
             <CardMedia
                 component="img"
-                image={`http://localhost:8000/images/${photo.file_name}`}
+                image={`http://localhost:8080/images/${photo.file_name}`}
                 alt="User upload"
                 sx={{ maxHeight: 500, objectFit: "contain", backgroundColor: "#f5f5f5" }}
             />

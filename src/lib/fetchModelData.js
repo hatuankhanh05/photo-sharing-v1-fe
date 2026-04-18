@@ -1,12 +1,10 @@
-import axios from "axios"; 
-
-const BASE_URL = "http://localhost:8000";
+import axiosClient from "../api/axiosClient";
 
 async function fetchModel(url) {
   try {
-    const response = await axios.get(`${BASE_URL}${url}`);
+    const res = await axiosClient.get(`${url}`);
     
-    return { data: response.data };
+    return { data: res.data };
   } catch (error) {
     if (error.response) {
       throw new Error(`HTTP error! status: ${error.response.status}`);
