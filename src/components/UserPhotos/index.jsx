@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Typography, Card, CardMedia, CardContent, List, ListItem, ListItemText, Divider, Button, Box } from "@mui/material"; // Bổ sung: Import Button và Box cho Stepper
+import { Typography, Card, CardMedia, CardContent, List, ListItem, ListItemText, Divider, Button, Box, TextField } from "@mui/material"; // Bổ sung: Import Button và Box cho Stepper
 
 import "./styles.css";
 import { useParams, Link, useNavigate } from "react-router-dom";
 // import models from "../../modelData/models";
 import fetchModel from "../../lib/fetchModelData";
 import { AdvancedFeaturesContext } from "../../App";
+
+import axiosClient from "../../api/axiosClient";
 
 /**
  * Define UserPhotos, a React component of Project 4.
@@ -17,10 +19,12 @@ function UserPhotos () {
 
     const [photos, setPhotos] = useState([]);
 
+    const [newComments, setNewComments] = useState({});
+
     useEffect(() => {
         const loadPhotos = async () => {
             try {
-                const response = await fetchModel(`photo/photosOfUser/${user.userId}`);
+                const response = await fetchModel(`/photo/photosOfUser/${user.userId}`);
                 
                 setPhotos(response.data);
             } catch (error) {
@@ -48,6 +52,34 @@ function UserPhotos () {
         if (currentIndex > 0) {
             const prevPhotoId = photos[currentIndex - 1]._id;
             navigate(`/photos/${user.userId}/${prevPhotoId}`);
+        }
+    };
+
+    const handleCommentChange = (photoId, text) => {
+        setNewComments(prev => ({
+            ...prev,
+            [photoId]: text
+        }))
+    };
+
+    const handleAddComment = async (photoId) => {
+        const commentText = newComments[photoId];
+
+        if (!commentText || commentText.trim() === "") {
+            alert("Vui lòng nhập nội dung bình luận");
+            return;
+        }
+
+        try {
+            await axiosClient.post(`/photo/commentsOfPhoto/${photoId}`, {comment: commentText});
+
+            const updatedPhotoResponse = await fetchModel(`/photo/photosOfUser/${user.userId}`);
+            setPhotos(updatedPhotoResponse.data);
+
+            setNewComments(prev => ({...prev, [photoId]: ""}));
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.message || "Đã xảy ra lỗi khi thêm bình luận");
         }
     };
 
@@ -93,19 +125,33 @@ function UserPhotos () {
                         </List>
                     </>
                 )}
+
+                <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <TextField
+                        fullWidth
+                        multiline
+                        rows={2}
+                        placeholder="Add a comment..."
+                        variant="outlined"
+                        value={newComments[photo._id] || ""}
+                        onChange={(e) => handleCommentChange(photo._id, e.target.value)}
+                    />
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        sx={{ alignSelf: 'flex-end' }}
+                        onClick={() => handleAddComment(photo._id)}
+                        disabled={!newComments[photo._id] || newComments[photo._id].trim() === ""} // Disable nút nếu chưa gõ gì
+                    >
+                        Post Comment
+                    </Button>
+                </Box>
             </CardContent>
         </Card>
     );
 
     return (
         <div>
-            <Typography variant="body1" gutterBottom>
-                This should be the UserPhotos view of the PhotoShare app. Since it is
-                invoked from React Router the params from the route will be in property
-                match. So this should show details of user:
-                {user.userId}. You can fetch the model for the user
-                from models.photoOfUserModel(userId):
-            </Typography>
 
             {photos.length > 0 ? (
                 advancedFeatures ? (
