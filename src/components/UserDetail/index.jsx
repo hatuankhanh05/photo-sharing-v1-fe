@@ -18,7 +18,9 @@ function UserDetail() {
         const loadUserDetail = async () => {
             try {
                 const response = await fetchModel(`/user/${user.userId}`);
-                
+
+                // console.log(response.data.password);
+
                 setUserDetail(response.data);
             } catch (error) {
                 console.error("Lỗi khi lấy chi tiết người dùng:", error);

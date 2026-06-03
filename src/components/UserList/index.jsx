@@ -4,8 +4,10 @@ import {
   List,
   ListItem,
   ListItemText,
+  Box,
+  Chip
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./styles.css";
 // import models from "../../modelData/models";
@@ -16,6 +18,7 @@ import fetchModel from "../../lib/fetchModelData";
  */
 function UserList () {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
       const loadUsers = async () => {
@@ -31,13 +34,33 @@ function UserList () {
       loadUsers();
     }, []);
 
+    const handleCommentBubbleClick = (e, userId) => {
+      e.preventDefault();
+      e.stopPropagation();
+      navigate(`/comments/${userId}`);
+    };
+
     return (
       <div>
         <List component="nav">
-          {users.map((item) => (
-            <React.Fragment key={item._id}>
-              <ListItem button component={Link} to={`/users/${item._id}`}>
-                      <ListItemText primary={`${item.first_name} ${item.last_name}`}/>
+          {users.map((user) => (
+            <React.Fragment key={user._id}>
+              <ListItem button component={Link} to={`/users/${user._id}`}>
+                      <ListItemText primary={`${user.first_name} ${user.last_name}`}/>
+
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                                <Chip 
+                                    label={user.photoCount || 0} 
+                                    size="small" 
+                                    sx={{ backgroundColor: '#4caf50', color: 'white', fontWeight: 'bold' }} 
+                                />
+                                <Chip 
+                                    label={user.commentCount || 0} 
+                                    size="small" 
+                                    sx={{ backgroundColor: '#f44336', color: 'white', fontWeight: 'bold', cursor: 'pointer' }} 
+                                    onClick={(e) => handleCommentBubbleClick(e, user._id)}
+                                />
+                            </Box>
               </ListItem>
               <Divider />
             </React.Fragment>

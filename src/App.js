@@ -9,6 +9,7 @@ import UserDetail from "./components/UserDetail";
 import UserList from "./components/UserList";
 import UserPhotos from "./components/UserPhotos";
 import LoginRegister from './components/LoginRegister';
+import UserComments from './components/UserComments';
 
 export const AdvancedFeaturesContext = createContext();
 
@@ -49,6 +50,7 @@ const App = (props) => {
                       element = {<UserPhotos />}
                   />
                   <Route path="/users" element={<UserList />} />
+                  <Route path="/comments/:userId" element={<UserComments />} />
                   <Route path="/login" element={<Navigate to={`/users/${currentUser._id}`} replace/>}/>
                     </>
                   ) :

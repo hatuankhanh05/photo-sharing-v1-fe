@@ -27,7 +27,7 @@ function TopBar({ currentUser, setCurrentUser }) {
   const [appContext, setAppContext] = useState("");
 
   const { advancedFeatures, setAdvancedFeatures } = useContext(
-    AdvancedFeaturesContext,
+    AdvancedFeaturesContext
   );
 
   useEffect(() => {
@@ -103,9 +103,6 @@ function TopBar({ currentUser, setCurrentUser }) {
             {currentUser ? `Hi ${currentUser.first_name}` : "Please login"}
           </Typography>
 
-          <Typography variant="body2" color="inherit">
-            This is the TopBar component
-          </Typography>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
