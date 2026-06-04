@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: "http://localhost:8080/api",
+    baseURL: "https://yjnw85-8080.csb.app/api",
     withCredentials: true,
 });
 
